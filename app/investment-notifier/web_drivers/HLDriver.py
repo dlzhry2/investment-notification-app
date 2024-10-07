@@ -37,7 +37,7 @@ class HLDriver(WebDriver):
 
         self.authenticated = True
 
-    def get_all_time_percentage_change(self):
+    def get_all_time_percentage_change(self) -> str:
         if not self.authenticated:
             self.authenticate()
 
