@@ -5,9 +5,9 @@ from domain.Investment import Investment
 
 
 class WebDriver:
-    chrome_options = Options()
-    chrome_options.binary_location = './chrome/chromedriver.exe'
-    sl_driver = webdriver.Chrome()
+    options = webdriver.FirefoxOptions()
+    options.add_argument("-headless")
+    sl_driver = webdriver.Firefox(options=options)
 
     def authenticate(self):
         raise NotImplementedError
@@ -21,7 +21,7 @@ class WebDriver:
     def go_to(self, url: str) -> None:
         self.sl_driver.get(url)
 
-    def wait(self, timeout: int = 2) -> None:
+    def set_implicit_wait(self, timeout: int = 2) -> None:
         self.sl_driver.implicitly_wait(timeout)
 
     def quit(self) -> None:

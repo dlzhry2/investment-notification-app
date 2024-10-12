@@ -10,6 +10,9 @@ from web_drivers.util.HL_helper import get_required_secure_nos, map_hl_row_to_in
 class HLDriver(WebDriver):
     authenticated: bool = False
 
+    def __init__(self):
+        self.set_implicit_wait()
+
     def authenticate(self) -> None:
         user_name = os.getenv("LOGIN_USER_NAME")
         date_of_birth = os.getenv("LOGIN_DOB")
@@ -26,7 +29,6 @@ class HLDriver(WebDriver):
         user_secure_no = os.getenv("LOGIN_SECURE_NO")
 
         # Second step auth
-        self.wait()
         self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(user_password)
         secure_numbers_required = self.sl_driver.find_elements(By.CLASS_NAME, "secure-number-container__label")
         no_one, no_two, no_three = get_required_secure_nos(user_secure_no, secure_numbers_required)
@@ -43,7 +45,7 @@ class HLDriver(WebDriver):
 
         self.go_to("https://online.hl.co.uk/my-accounts")
         self.sl_driver.find_element(By.CLASS_NAME, "product-name").click()
-        self.wait()
+        hack = self.sl_driver.page_source
 
         percentage_change = self.sl_driver.find_element(By.ID, "gainpc_total").text
         return f"{percentage_change.strip()} %"
@@ -54,7 +56,8 @@ class HLDriver(WebDriver):
 
         self.go_to("https://online.hl.co.uk/my-accounts")
         self.sl_driver.find_element(By.CLASS_NAME, "product-name").click()
-        self.wait()
+        self.set_implicit_wait()
+        hack = self.sl_driver.page_source
 
         investment_rows = self.sl_driver.find_elements(By.CSS_SELECTOR, "[id^=ls-row-]")
         investments: [Investment] = []
@@ -64,10 +67,3 @@ class HLDriver(WebDriver):
             investments.append(mapped_investment)
 
         return investments
-
-
-my_test_driver = HLDriver()
-test_investments = my_test_driver.get_investments()
-
-for inv in test_investments:
-    print(inv.__dict__)
