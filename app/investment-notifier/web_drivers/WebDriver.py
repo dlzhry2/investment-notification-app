@@ -1,13 +1,12 @@
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
 from domain.Investment import Investment
 
 
 class WebDriver:
-    options = webdriver.FirefoxOptions()
+    options = webdriver.ChromeOptions()
     options.add_argument("-headless")
-    sl_driver = webdriver.Firefox(options=options)
+    sl_driver = webdriver.Chrome(options=options)
 
     def authenticate(self):
         raise NotImplementedError

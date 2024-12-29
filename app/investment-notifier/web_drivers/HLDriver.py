@@ -19,7 +19,7 @@ class HLDriver(WebDriver):
 
         # First step auth
         self.go_to("https://online.hl.co.uk/my-accounts/login-step-one")
-        self.sl_driver.find_element(By.ID, "acceptCookieButton").click()
+        self.sl_driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
         self.sl_driver.find_element(By.NAME, "username").send_keys(user_name)
         self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(date_of_birth)
         self.sl_driver.find_element(By.CLASS_NAME, "tertiary-button-large").click()
