@@ -27,6 +27,7 @@ class HLInvestmentNotifier(InvestmentNotifier):
         gain_loss = self.investments_web_driver.get_all_time_percentage_change()
 
         message = f"Total Account Gain/Loss: {gain_loss}"
+        print(f"Sending message to sns: {message}")
 
         self.notification_adapter.notify(
             self.notification_endpoint,
