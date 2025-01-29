@@ -1,5 +1,6 @@
 import os
 
+from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from domain.Investment import Investment
@@ -11,7 +12,7 @@ class HLDriver(WebDriver):
     authenticated: bool = False
 
     def __init__(self):
-        self.set_implicit_wait()
+        self.set_implicit_wait(5)
 
     def authenticate(self) -> None:
         user_name = os.getenv("LOGIN_USER_NAME")
@@ -19,7 +20,13 @@ class HLDriver(WebDriver):
 
         # First step auth
         self.go_to("https://online.hl.co.uk/my-accounts/login-step-one")
-        self.sl_driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
+
+        # Intermittent error: maybe session is persisted
+        try:
+            self.sl_driver.find_element(By.ID, "onetrust-accept-btn-handler").click()
+        except NoSuchElementException as e:
+            print(f"The cookie banner was not found {e.msg}")
+
         self.sl_driver.find_element(By.NAME, "username").send_keys(user_name)
         self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(date_of_birth)
         self.sl_driver.find_element(By.CLASS_NAME, "tertiary-button-large").click()
