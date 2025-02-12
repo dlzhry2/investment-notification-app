@@ -8,9 +8,9 @@ from services.sma_calculator import StockSMA
 
 
 class SMAApiHandler:
-    # TODO - could swap for SSM
-    base_url = os.getenv("SMA_BASE_URL")
-    api_key = os.getenv("SMA_API_KEY")
+    def __init__(self, api_key):
+        self.base_url = os.getenv("SMA_BASE_URL")
+        self.api_key = api_key
 
     async def get_sma_for_stock(
             self,

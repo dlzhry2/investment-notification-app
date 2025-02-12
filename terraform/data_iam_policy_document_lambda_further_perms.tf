@@ -22,4 +22,26 @@ data "aws_iam_policy_document" "lambda_further_perms" {
 
     resources = [resource.aws_sns_topic.investment_notifications.arn]
   }
+
+  # SSM permissions
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter"
+    ]
+
+    resources = ["*"]
+  }
+
+  # KMS permissions
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt"
+    ]
+
+    resources = ["*"]
+  }
 }

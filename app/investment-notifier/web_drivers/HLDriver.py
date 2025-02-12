@@ -1,23 +1,20 @@
-import os
-
 from selenium.common import NoSuchElementException
 from selenium.webdriver.common.by import By
 
 from domain.Investment import Investment
 from web_drivers.WebDriver import WebDriver
+from web_drivers.util.HLAuthInfo import HLAuthInfo
 from web_drivers.util.HL_helper import get_required_secure_nos, map_hl_row_to_investment
 
 
 class HLDriver(WebDriver):
     authenticated: bool = False
 
-    def __init__(self):
+    def __init__(self, auth_info: HLAuthInfo):
         self.set_implicit_wait(5)
+        self.auth_info = auth_info
 
     def authenticate(self) -> None:
-        user_name = os.getenv("LOGIN_USER_NAME")
-        date_of_birth = os.getenv("LOGIN_DOB")
-
         # First step auth
         self.go_to("https://online.hl.co.uk/my-accounts/login-step-one")
 
@@ -27,18 +24,14 @@ class HLDriver(WebDriver):
         except NoSuchElementException as e:
             print(f"The cookie banner was not found {e.msg}")
 
-        self.sl_driver.find_element(By.NAME, "username").send_keys(user_name)
-        self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(date_of_birth)
+        self.sl_driver.find_element(By.NAME, "username").send_keys(self.auth_info.user_name)
+        self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(self.auth_info.dob)
         self.sl_driver.find_element(By.CLASS_NAME, "tertiary-button-large").click()
 
-        # Should do local .env and SSM in AWS
-        user_password = os.getenv("LOGIN_PASSWORD")
-        user_secure_no = os.getenv("LOGIN_SECURE_NO")
-
         # Second step auth
-        self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(user_password)
+        self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(self.auth_info.password)
         secure_numbers_required = self.sl_driver.find_elements(By.CLASS_NAME, "secure-number-container__label")
-        no_one, no_two, no_three = get_required_secure_nos(user_secure_no, secure_numbers_required)
+        no_one, no_two, no_three = get_required_secure_nos(self.auth_info.secure_no, secure_numbers_required)
         self.sl_driver.find_element(By.NAME, "secure-number[1]").send_keys(no_one)
         self.sl_driver.find_element(By.NAME, "secure-number[2]").send_keys(no_two)
         self.sl_driver.find_element(By.NAME, "secure-number[3]").send_keys(no_three)

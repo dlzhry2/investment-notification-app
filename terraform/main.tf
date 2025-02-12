@@ -25,12 +25,7 @@ resource "aws_lambda_function" "investment_notifier_lambda" {
     variables = {
       INVESTMENT_REC_NO = 5,
       SMA_BASE_URL      = "https://www.alphavantage.co/",
-      LOGIN_DOB         = var.env_name_placeholder
-      LOGIN_PASSWORD    = var.env_name_placeholder
-      LOGIN_SECURE_NO   = var.env_name_placeholder
-      LOGIN_USER_NAME   = var.env_name_placeholder
-      SMA_API_KEY       = var.env_name_placeholder
-      SNS_TOPIC_ARN     = aws_sns_topic.investment_notifications.arn
+      SNS_TOPIC_ARN = aws_sns_topic.investment_notifications.arn
     }
   }
 }
