@@ -1,7 +1,6 @@
-variable "env_name_placeholder" {
-  # TODO - replace with SSM in next PR
+variable "param_name_placeholder" {
   default     = "FILL_ME_IN"
-  description = "The default placeholder text for a lambda environment variable"
+  description = "The default placeholder text for an SSM parameter"
   type        = string
 }
 

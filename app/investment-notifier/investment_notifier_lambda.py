@@ -3,17 +3,21 @@ import os
 from HLInvestmentNotifier import HLInvestmentNotifier
 from adapters.SMAApiHandler import SMAApiHandler
 from adapters.aws.SNSAdapter import SNSAdapter
+from adapters.aws.SSMAdapter import SSMAdapter
+from consts.param_consts import SSM_API_KEY_PARAM_NAME
+from consts.report_consts import REPORT_KEY_NAME, PERMITTED_REPORTS, NET_GAIN_LOSS, RECOMMENDED_INVESTMENTS
 from web_drivers.HLDriver import HLDriver
+from web_drivers.util.HLAuthInfo import HLAuthInfo
 
-RECOMMENDED_INVESTMENTS = "recommended investments"
-NET_GAIN_LOSS = "net gain/loss"
-PERMITTED_REPORTS = [RECOMMENDED_INVESTMENTS, NET_GAIN_LOSS]
 INVESTMENT_REC_NO = int(os.getenv("INVESTMENT_REC_NO"))
 SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
 
-api_handler = SMAApiHandler()
-web_driver = HLDriver()
 notification_adapter = SNSAdapter()
+param_adapter = SSMAdapter()
+
+api_handler = SMAApiHandler(param_adapter.get_param(SSM_API_KEY_PARAM_NAME))
+auth_info = HLAuthInfo(param_adapter)
+web_driver = HLDriver(auth_info)
 
 notifier_app = HLInvestmentNotifier(
     api_handler,
@@ -24,7 +28,7 @@ notifier_app = HLInvestmentNotifier(
 
 
 def handler(event, context):
-    requested_report = event.get("report")
+    requested_report = event.get(REPORT_KEY_NAME)
 
     if requested_report not in PERMITTED_REPORTS:
         raise NotImplementedError("Requested report does not exist")
