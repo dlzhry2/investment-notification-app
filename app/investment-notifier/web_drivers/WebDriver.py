@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from tempfile import mkdtemp
+from collections.abc import Iterable
 
 from domain.Investment import Investment
 
@@ -38,7 +39,7 @@ class WebDriver:
     def get_all_time_percentage_change(self) -> str:
         raise NotImplementedError
 
-    def get_investments(self) -> [Investment]:
+    def get_investments(self) -> Iterable[Investment]:
         raise NotImplementedError
 
     def go_to(self, url: str) -> None:

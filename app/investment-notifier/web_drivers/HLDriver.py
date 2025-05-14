@@ -50,7 +50,7 @@ class HLDriver(WebDriver):
         percentage_change = self.sl_driver.find_element(By.ID, "gainpc_total").text
         return f"{percentage_change.strip()} %"
 
-    def get_investments(self) -> [Investment]:
+    def get_investments(self) -> list[Investment]:
         if not self.authenticated:
             self.authenticate()
 
@@ -60,7 +60,7 @@ class HLDriver(WebDriver):
         hack = self.sl_driver.page_source
 
         investment_rows = self.sl_driver.find_elements(By.CSS_SELECTOR, "[id^=ls-row-]")
-        investments: [Investment] = []
+        investments: list[Investment] = []
 
         for investment_row in investment_rows:
             mapped_investment = map_hl_row_to_investment(investment_row)

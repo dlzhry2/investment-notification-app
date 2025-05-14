@@ -1,6 +1,6 @@
 from adapters.BaseNotificationAdapter import BaseNotificationAdapter
 from adapters.SMAApiHandler import SMAApiHandler
-from domain.Investment import Investment
+from services.sma_calculator import StockSMA
 from web_drivers.WebDriver import WebDriver
 
 
@@ -17,7 +17,7 @@ class InvestmentNotifier:
         self.notification_adapter = notification_adapter
         self.notification_endpoint = notification_endpoint
 
-    def report_best_next_investments(self) -> list[Investment]:
+    def report_best_next_investments(self) -> list[StockSMA]:
         raise NotImplementedError("Improper usage of InvestmentNotifier base class")
 
     def report_overall_gain_loss(self) -> str:

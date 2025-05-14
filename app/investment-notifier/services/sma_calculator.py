@@ -2,7 +2,8 @@ from domain.Investment import Investment
 
 DOWNWARD_TREND = "down"
 UPWARD_TREND = "up"
-
+MIN_DATA_POINTS = 2
+INSUFFICIENT_DATA_EXCEPTION = "Insufficient historical price data for stock"
 
 class StockSMA:
     def __init__(self, investment: Investment, sma_list: list[float]):
@@ -14,31 +15,36 @@ class StockSMA:
 
 
 def calculate_rate_of_change(sma_list: list[float]) -> float:
-    # TODO - handle list being empty and sort out mypy
+    if len(sma_list) < MIN_DATA_POINTS:
+        raise Exception(INSUFFICIENT_DATA_EXCEPTION)
+
     trend = find_starting_trend(sma_list)
-    days = 1
+    days_counted = 1
     end_price = sma_list[0]
-    start_price = None
+    start_price = sma_list[1]
 
     if trend == UPWARD_TREND:
         for i in range(len(sma_list) - 1):
             if sma_list[i + 1] > sma_list[i]:
                 break
-            days = days + 1
+            days_counted = days_counted + 1
             start_price = sma_list[i + 1]
 
     elif trend == DOWNWARD_TREND:
         for i in range(len(sma_list) - 1):
             if sma_list[i + 1] < sma_list[i]:
                 break
-            days = days + 1
+            days_counted = days_counted + 1
             start_price = sma_list[i + 1]
 
-    rate_of_percentage_range = (((end_price - start_price) / end_price) * 100) / days
+    rate_of_percentage_range = (((end_price - start_price) / end_price) * 100) / days_counted
     return round(rate_of_percentage_range, 4)
 
 
 def find_starting_trend(sma_list: list[float]) -> str:
+    if len(sma_list) < MIN_DATA_POINTS:
+        raise Exception(INSUFFICIENT_DATA_EXCEPTION)
+
     for i in range(len(sma_list) - 1):
         diff = sma_list[i] - sma_list[i + 1]
 

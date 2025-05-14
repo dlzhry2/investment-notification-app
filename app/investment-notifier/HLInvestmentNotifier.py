@@ -1,19 +1,19 @@
-from domain.Investment import Investment
 from services.InvestmentNotifier import InvestmentNotifier
+from services.sma_calculator import StockSMA
 
 
 class HLInvestmentNotifier(InvestmentNotifier):
 
-    def report_best_next_investments(self, top_x: int = 3) -> [Investment]:
+    def report_best_next_investments(self, top_x: int = 3) -> list[StockSMA]:
         investments = self.investments_web_driver.get_investments()
         sma_data = self.sma_service.get_smas_for_investments(investments)
 
         sma_data.sort(key=lambda x: x.rate_of_change, reverse=True)
-        top_x = sma_data[: top_x]
+        top_x_investment_options = sma_data[: top_x]
         message = ""
         print("Gathering top investment options: ")
 
-        for item in top_x:
+        for item in top_x_investment_options:
             investment_recommendation = (f"{item.investment.name} ({item.investment.ticker}) - 200 Day SMA rate of "
                                          f"change = {item.rate_of_change}\n")
             message = message + investment_recommendation
@@ -22,6 +22,8 @@ class HLInvestmentNotifier(InvestmentNotifier):
             self.notification_endpoint,
             message
         )
+
+        return top_x_investment_options
 
     def report_overall_gain_loss(self) -> str:
         gain_loss = self.investments_web_driver.get_all_time_percentage_change()

@@ -3,6 +3,8 @@ import os
 
 import aiohttp
 
+from collections.abc import Iterable
+
 from domain.Investment import Investment
 from services.sma_calculator import StockSMA
 
@@ -49,13 +51,13 @@ class SMAApiHandler:
 
             return StockSMA(investment, sma_values)
 
-    async def _get_sma_tasks_for_stocks(self, investments: [Investment]) -> [StockSMA]:
+    async def _get_sma_tasks_for_stocks(self, investments: Iterable[Investment]) -> list[StockSMA]:
         async with aiohttp.ClientSession() as session:
             return await asyncio.gather(*[
                 self.get_sma_for_stock(session, investment) for investment in investments
             ])
 
-    def get_smas_for_investments(self, investments: [Investment]) -> [StockSMA]:
+    def get_smas_for_investments(self, investments: Iterable[Investment]) -> list[StockSMA]:
         loop = asyncio.get_event_loop()
         results = loop.run_until_complete(self._get_sma_tasks_for_stocks(investments))
         loop.close()

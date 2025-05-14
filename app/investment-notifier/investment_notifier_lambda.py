@@ -9,8 +9,16 @@ from consts.report_consts import REPORT_KEY_NAME, PERMITTED_REPORTS, NET_GAIN_LO
 from web_drivers.HLDriver import HLDriver
 from web_drivers.util.HLAuthInfo import HLAuthInfo
 
-INVESTMENT_REC_NO = int(os.getenv("INVESTMENT_REC_NO"))
-SNS_TOPIC_ARN = os.getenv("SNS_TOPIC_ARN")
+def get_env(variable_name: str) -> str:
+    variable_value = os.getenv(variable_name)
+
+    if variable_value is None:
+        raise EnvironmentError(f"The environment variable {variable_name} was not found.")
+
+    return variable_value
+
+INVESTMENT_REC_NO = int(get_env("INVESTMENT_REC_NO"))
+SNS_TOPIC_ARN = get_env("SNS_TOPIC_ARN")
 
 notification_adapter = SNSAdapter()
 param_adapter = SSMAdapter()
