@@ -14,7 +14,7 @@ class HLDriver(WebDriver):
         self.set_implicit_wait(5)
         self.auth_info = auth_info
 
-    def authenticate(self) -> None:
+    def __authenticate(self) -> None:
         # First step auth
         self.go_to("https://online.hl.co.uk/my-accounts/login-step-one")
 
@@ -24,14 +24,24 @@ class HLDriver(WebDriver):
         except NoSuchElementException as e:
             print(f"The cookie banner was not found {e.msg}")
 
-        self.sl_driver.find_element(By.NAME, "username").send_keys(self.auth_info.user_name)
-        self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(self.auth_info.dob)
+        self.sl_driver.find_element(By.NAME, "username").send_keys(
+            self.auth_info.user_name
+        )
+        self.sl_driver.find_element(By.NAME, "date-of-birth").send_keys(
+            self.auth_info.dob
+        )
         self.sl_driver.find_element(By.CLASS_NAME, "tertiary-button-large").click()
 
         # Second step auth
-        self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(self.auth_info.password)
-        secure_numbers_required = self.sl_driver.find_elements(By.CLASS_NAME, "secure-number-container__label")
-        no_one, no_two, no_three = get_required_secure_nos(self.auth_info.secure_no, secure_numbers_required)
+        self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(
+            self.auth_info.password
+        )
+        secure_numbers_required = self.sl_driver.find_elements(
+            By.CLASS_NAME, "secure-number-container__label"
+        )
+        no_one, no_two, no_three = get_required_secure_nos(
+            self.auth_info.secure_no, secure_numbers_required
+        )
         self.sl_driver.find_element(By.NAME, "secure-number[1]").send_keys(no_one)
         self.sl_driver.find_element(By.NAME, "secure-number[2]").send_keys(no_two)
         self.sl_driver.find_element(By.NAME, "secure-number[3]").send_keys(no_three)
@@ -41,23 +51,23 @@ class HLDriver(WebDriver):
 
     def get_all_time_percentage_change(self) -> str:
         if not self.authenticated:
-            self.authenticate()
+            self.__authenticate()
 
         self.go_to("https://online.hl.co.uk/my-accounts")
         self.sl_driver.find_element(By.CLASS_NAME, "product-name").click()
-        hack = self.sl_driver.page_source
+        hack = self.sl_driver.page_source # noqa: F841
 
         percentage_change = self.sl_driver.find_element(By.ID, "gainpc_total").text
         return f"{percentage_change.strip()} %"
 
     def get_investments(self) -> list[Investment]:
         if not self.authenticated:
-            self.authenticate()
+            self.__authenticate()
 
         self.go_to("https://online.hl.co.uk/my-accounts")
         self.sl_driver.find_element(By.CLASS_NAME, "product-name").click()
         self.set_implicit_wait()
-        hack = self.sl_driver.page_source
+        hack  = self.sl_driver.page_source # noqa: F841 (test removing the hack soon)
 
         investment_rows = self.sl_driver.find_elements(By.CSS_SELECTOR, "[id^=ls-row-]")
         investments: list[Investment] = []

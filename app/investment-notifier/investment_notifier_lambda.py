@@ -5,17 +5,26 @@ from adapters.SMAApiHandler import SMAApiHandler
 from adapters.aws.SNSAdapter import SNSAdapter
 from adapters.aws.SSMAdapter import SSMAdapter
 from consts.param_consts import SSM_API_KEY_PARAM_NAME
-from consts.report_consts import REPORT_KEY_NAME, PERMITTED_REPORTS, NET_GAIN_LOSS, RECOMMENDED_INVESTMENTS
+from consts.report_consts import (
+    REPORT_KEY_NAME,
+    PERMITTED_REPORTS,
+    NET_GAIN_LOSS,
+    RECOMMENDED_INVESTMENTS,
+)
 from web_drivers.HLDriver import HLDriver
 from web_drivers.util.HLAuthInfo import HLAuthInfo
+
 
 def get_env(variable_name: str) -> str:
     variable_value = os.getenv(variable_name)
 
     if variable_value is None:
-        raise EnvironmentError(f"The environment variable {variable_name} was not found.")
+        raise EnvironmentError(
+            f"The environment variable {variable_name} was not found."
+        )
 
     return variable_value
+
 
 INVESTMENT_REC_NO = int(get_env("INVESTMENT_REC_NO"))
 SNS_TOPIC_ARN = get_env("SNS_TOPIC_ARN")
@@ -28,10 +37,7 @@ auth_info = HLAuthInfo(param_adapter)
 web_driver = HLDriver(auth_info)
 
 notifier_app = HLInvestmentNotifier(
-    api_handler,
-    web_driver,
-    notification_adapter,
-    SNS_TOPIC_ARN
+    api_handler, web_driver, notification_adapter, SNS_TOPIC_ARN
 )
 
 

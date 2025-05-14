@@ -15,12 +15,12 @@ class SMAApiHandler:
         self.api_key = api_key
 
     async def get_sma_for_stock(
-            self,
-            client_session: aiohttp.ClientSession,
-            investment: Investment,
-            interval: str = "daily",
-            period: int = 200,
-            limit: int = 365
+        self,
+        client_session: aiohttp.ClientSession,
+        investment: Investment,
+        interval: str = "daily",
+        period: int = 200,
+        limit: int = 365,
     ) -> StockSMA:
         query_params = {
             "function": "SMA",
@@ -28,14 +28,13 @@ class SMAApiHandler:
             "interval": interval,
             "time_period": period,
             "series_type": "close",
-            "apikey": self.api_key
+            "apikey": self.api_key,
         }
 
         sma_values = []
 
         async with client_session.get(
-            f"{self.base_url}query",
-            params=query_params
+            f"{self.base_url}query", params=query_params
         ) as response:
             parsed_response = await response.json()
             sma_data = parsed_response.get("Technical Analysis: SMA", {})
@@ -51,13 +50,20 @@ class SMAApiHandler:
 
             return StockSMA(investment, sma_values)
 
-    async def _get_sma_tasks_for_stocks(self, investments: Iterable[Investment]) -> list[StockSMA]:
+    async def _get_sma_tasks_for_stocks(
+        self, investments: Iterable[Investment]
+    ) -> list[StockSMA]:
         async with aiohttp.ClientSession() as session:
-            return await asyncio.gather(*[
-                self.get_sma_for_stock(session, investment) for investment in investments
-            ])
+            return await asyncio.gather(
+                *[
+                    self.get_sma_for_stock(session, investment)
+                    for investment in investments
+                ]
+            )
 
-    def get_smas_for_investments(self, investments: Iterable[Investment]) -> list[StockSMA]:
+    def get_smas_for_investments(
+        self, investments: Iterable[Investment]
+    ) -> list[StockSMA]:
         loop = asyncio.get_event_loop()
         results = loop.run_until_complete(self._get_sma_tasks_for_stocks(investments))
         loop.close()

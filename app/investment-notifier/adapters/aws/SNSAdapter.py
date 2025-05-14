@@ -7,7 +7,4 @@ class SNSAdapter(BaseNotificationAdapter):
         self.client = boto3.client("sns")
 
     def notify(self, topic: str, message: str) -> None:
-        self.client.publish(
-            TopicArn=topic,
-            Message=message
-        )
+        self.client.publish(TopicArn=topic, Message=message)

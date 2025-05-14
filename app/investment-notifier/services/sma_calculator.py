@@ -5,6 +5,7 @@ UPWARD_TREND = "up"
 MIN_DATA_POINTS = 2
 INSUFFICIENT_DATA_EXCEPTION = "Insufficient historical price data for stock"
 
+
 class StockSMA:
     def __init__(self, investment: Investment, sma_list: list[float]):
         # TODO - feat. in future could make this smarter and handle different periods
@@ -37,7 +38,9 @@ def calculate_rate_of_change(sma_list: list[float]) -> float:
             days_counted = days_counted + 1
             start_price = sma_list[i + 1]
 
-    rate_of_percentage_range = (((end_price - start_price) / end_price) * 100) / days_counted
+    rate_of_percentage_range = (
+        ((end_price - start_price) / end_price) * 100
+    ) / days_counted
     return round(rate_of_percentage_range, 4)
 
 
