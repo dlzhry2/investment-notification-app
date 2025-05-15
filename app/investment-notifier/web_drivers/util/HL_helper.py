@@ -16,14 +16,31 @@ def get_required_secure_nos(secure_no: str, input_elements: list[WebElement]):
     if len(number_positions_required) != 3:
         raise Exception("Could not find expected number of secure digits")
 
-    return (secure_no[number_positions_required[0]], secure_no[number_positions_required[1]],
-            secure_no[number_positions_required[2]])
+    return (
+        secure_no[number_positions_required[0]],
+        secure_no[number_positions_required[1]],
+        secure_no[number_positions_required[2]],
+    )
+
+
+def get_stock_ticker(hl_row: WebElement) -> str:
+    row_id = hl_row.get_attribute("id")
+
+    if row_id is None:
+        raise Exception("HL row ID could not be found - please investigate")
+
+    split_row_id = row_id.split("-")
+
+    if len(split_row_id) < 3:
+        raise Exception("HL row ID format change - please investigate")
+
+    return split_row_id[2]
 
 
 def map_hl_row_to_investment(hl_row: WebElement) -> Investment:
-    # TODO - could implement extra fields in future, beyond initial use case
+    # TODO - could implement extra fields in future, beyond MVP functionality
     investment = Investment()
-    ticker = hl_row.get_attribute("id").split("-")[2]
+    ticker = get_stock_ticker(hl_row)
     name = hl_row.find_element(By.CLASS_NAME, "link-headline").text
     gain_loss = hl_row.find_element(By.CSS_SELECTOR, "[id^=live_price_gainpc]").text
 

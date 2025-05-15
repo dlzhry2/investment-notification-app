@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from tempfile import mkdtemp
+from collections.abc import Iterable
 
 from domain.Investment import Investment
 
@@ -25,20 +26,17 @@ class WebDriver:
 
     service = Service(
         executable_path="/opt/chrome-driver/chromedriver-linux64/chromedriver",
-        service_log_path="/tmp/chromedriver.log"
+        service_log_path="/tmp/chromedriver.log",
     )
-    sl_driver = webdriver.Chrome(
-        service=service,
-        options=chrome_options
-    )
+    sl_driver = webdriver.Chrome(service=service, options=chrome_options)
 
-    def authenticate(self):
+    def __authenticate(self):
         raise NotImplementedError
 
     def get_all_time_percentage_change(self) -> str:
         raise NotImplementedError
 
-    def get_investments(self) -> [Investment]:
+    def get_investments(self) -> Iterable[Investment]:
         raise NotImplementedError
 
     def go_to(self, url: str) -> None:
