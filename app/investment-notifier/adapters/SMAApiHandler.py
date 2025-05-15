@@ -22,6 +22,7 @@ class SMAApiHandler:
         period: int = 200,
         limit: int = 365,
     ) -> StockSMA:
+        # Should extend to work for stocks in any country
         query_params = {
             "function": "SMA",
             "symbol": f"{investment.ticker}.LON",

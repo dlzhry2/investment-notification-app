@@ -15,7 +15,7 @@ class HLDriver(WebDriver):
         self.auth_info = auth_info
 
     def __authenticate(self) -> None:
-        # First step auth
+        # Authentication - step 1
         self.go_to("https://online.hl.co.uk/my-accounts/login-step-one")
 
         # Intermittent error: maybe session is persisted
@@ -32,7 +32,7 @@ class HLDriver(WebDriver):
         )
         self.sl_driver.find_element(By.CLASS_NAME, "tertiary-button-large").click()
 
-        # Second step auth
+        # Authentication - step 2
         self.sl_driver.find_element(By.ID, "online-password-verification").send_keys(
             self.auth_info.password
         )
