@@ -1,5 +1,5 @@
 # investment-notification-app
-Anpplication to report pertinent information on your assets such as daily change (%) or recommending your best next investment.
+An application to report pertinent information on your assets such as daily change (%) or recommending your best next investment.
 
 ## Why?
 It has been built as a generic application, which could easily be extended to support interacting with other investment platforms.
