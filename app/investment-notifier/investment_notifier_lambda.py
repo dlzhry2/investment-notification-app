@@ -18,8 +18,6 @@ from web_drivers.util.HLAuthInfo import HLAuthInfo
 def get_env(variable_name: str) -> str:
     variable_value = os.getenv(variable_name)
 
-    dangling_name
-
     if variable_value is None:
         raise EnvironmentError(
             f"The environment variable {variable_name} was not found."
