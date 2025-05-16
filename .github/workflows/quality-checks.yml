@@ -3,9 +3,10 @@ name: Quality checks
 on: [push, pull_request]
 
 jobs:
-  build:
+  Python-quality-checks:
 
     runs-on: ubuntu-latest
+    working-directory: './app/investment-notifier'
 
     steps:
     - uses: actions/checkout@v4
@@ -17,5 +18,7 @@ jobs:
         cache: 'pip'
     
     - name: Install dependencies
-      working-directory: './app/investment-notifier'
       run: pip install -r dev-requirements.txt
+
+    - name: Run quality checks
+      run: make quality-checks
