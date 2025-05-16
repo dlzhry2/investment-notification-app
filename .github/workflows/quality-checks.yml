@@ -6,7 +6,9 @@ jobs:
   Python-quality-checks:
 
     runs-on: ubuntu-latest
-    working-directory: './app/investment-notifier'
+    defaults:
+      run:
+        working-directory: ./app/investment-notifier
 
     steps:
     - uses: actions/checkout@v4
