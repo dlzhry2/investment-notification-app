@@ -20,7 +20,7 @@ jobs:
         cache: 'pip'
     
     - name: Install dependencies
-      run: pip install -r dev-requirements.txt
+      run: pip install -r dev-requirements.txt && pip install -r requirements.txt
 
     - name: Run quality checks
       run: make quality-checks
