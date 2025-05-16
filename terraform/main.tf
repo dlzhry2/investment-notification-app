@@ -19,13 +19,13 @@ resource "aws_lambda_function" "investment_notifier_lambda" {
   timeout       = 20
   memory_size   = 1024
   role          = aws_iam_role.notifier_lambda_role.arn
-  image_uri     = "${data.aws_ecr_repository.dy_images.repository_url}:latest"
+  image_uri     = "${data.aws_ecr_repository.source_repo.repository_url}:latest"
 
   environment {
     variables = {
       INVESTMENT_REC_NO = 5,
       SMA_BASE_URL      = "https://www.alphavantage.co/",
-      SNS_TOPIC_ARN = aws_sns_topic.investment_notifications.arn
+      SNS_TOPIC_ARN     = aws_sns_topic.investment_notifications.arn
     }
   }
 }
