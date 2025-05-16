@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   Python-quality-checks:
-
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -24,3 +23,17 @@ jobs:
 
     - name: Run quality checks
       run: make quality-checks
+
+  Terraform-quality-checks:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./terraform
+      
+    steps:
+    - uses: actions/checkout@v4
+    - uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: "1.10.5"
+    - name: Run terraform format checkout
+      run: terraform fmt -check
